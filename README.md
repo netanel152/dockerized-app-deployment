@@ -64,27 +64,27 @@ This project demonstrates how to deploy a web application using Docker container
 
 On your virtual machine, run the setup script to install Docker and Docker Compose, and start the Docker services:
 
-```sh
- sudo bash vm-setup/setup.sh
-```
+   ```sh
+      sudo bash vm-setup/setup.sh
+   ```
 
 2.  **Configure the Network**
 
     Run the network setup script to configure network settings for Docker containers:
 
-```sh
-   sudo bash vm-setup/network-setup.sh
-```
+   ```sh
+      sudo bash vm-setup/network-setup.sh
+   ```
 
 ### Running Scripts Over SSH
 
 1.  **Connect to the VM via SSH**
 
-Connect to your virtual machine using SSH:
+   Connect to your virtual machine using SSH:
 
-```sh
-   ssh user@vm-ip-address
-```
+   ```sh
+      ssh user@vm-ip-address
+   ```
 
 2. **Run the Insert Data Script**
 
