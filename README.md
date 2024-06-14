@@ -21,7 +21,6 @@ This project demonstrates how to deploy a web application using Docker container
 - **app/read-data.sh**: Script to read data from the MySQL database.
 - **vm-setup/setup.sh**: Script to set up Docker and Docker Compose on the virtual machine.
 - **vm-setup/network-setup.sh**: Script to configure network settings for Docker containers.
-- **README.md**: Project documentation and instructions.
 
 ## Setup and Usage
 
@@ -34,5 +33,19 @@ This project demonstrates how to deploy a web application using Docker container
    ```sh
    git clone https://github.com/your-username/dockerized-app-deployment.git
    cd dockerized-app-deployment
+2. **Start the Docker Containers**
+
+   Start the MySQL and application containers using Docker Compose:
+
+   ```sh
+      docker-compose up -d
+
+
+3. **Insert Data into the Database**
+   
+   Run the following command to insert data into the MySQL database:
+
+   ```sh
+      docker exec -it app-container /usr/local/bin/insert-data.sh
 
 
