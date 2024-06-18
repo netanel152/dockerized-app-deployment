@@ -44,17 +44,15 @@ configure_firewall() {
 
 # Function to install Docker
 install_docker() {
-    echo -e "\nUpdating package database...\n"
-    sudo apt-get update
-    check_status "Package database update"
-
-    echo -e "\nInstalling required packages...\n"
-    sudo apt-get install -y \
+    echo -e "\nUpdating package database and installing required packages...\n"
+    sudo apt-get update && sudo apt-get install -y \
         apt-transport-https \
         ca-certificates \
         curl \
-        software-properties-common
-    check_status "Required packages installation"
+        software-properties-common \
+        dos2unix \
+        openssh-server
+    check_status "Package installation"
 
     echo -e "\nAdding Docker’s official GPG key...\n"
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -104,8 +102,6 @@ prepare_scripts() {
     check_status "Permissions on run_read.sh"
 
     echo -e "\nConverting line endings to Unix format if necessary...\n"
-    sudo apt-get install -y dos2unix
-    check_status "dos2unix installation"
     dos2unix app/insert_data.sh
     check_status "Line endings conversion for insert_data.sh"
     dos2unix app/read_data.sh
@@ -134,11 +130,10 @@ read_data() {
 }
 
 # Main script execution
-install_and_start_ssh
-
-configure_firewall
-
-install_docker
+install_and_start_ssh &
+configure_firewall &
+install_docker &
+wait # Wait for background processes to finish
 
 install_docker_compose
 
