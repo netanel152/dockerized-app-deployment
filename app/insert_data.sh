@@ -15,5 +15,5 @@ while ! [[ "$age" =~ ^[0-9]+$ ]]; do
     read -p "Enter age: " age
 done
 
-# Connect to MySQL and insert data
-mysql -h "${MYSQL_HOST:-mysql}" -u "${MYSQL_USER:-root}" -p"${MYSQL_PASSWORD:-root}" "${MYSQL_DATABASE:-user_data_db}" -e "INSERT INTO users (Name, Age) VALUES ('$name', $age);"
+# Connect to MySQL and insert data using the env.cnf file for credentials
+mysql --defaults-extra-file=/app/env.cnf -e "INSERT INTO users (Name, Age) VALUES ('$name', $age);" "${MYSQL_DATABASE:-user_data_db}"

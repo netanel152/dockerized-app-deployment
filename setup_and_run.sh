@@ -27,11 +27,19 @@ install_and_start_ssh() {
     check_status "SSH service status"
 }
 
-# Function to configure firewall to allow SSH
+# Function to configure firewall to allow SSH and ICMP
 configure_firewall() {
     echo -e "\nAllowing SSH through the firewall...\n"
     sudo ufw allow ssh
     check_status "Firewall allow SSH"
+
+    echo -e "\nAllowing ICMP echo requests through the firewall...\n"
+    sudo iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+    check_status "Allow ICMP echo requests"
+
+    echo -e "\nAllowing TCP port 22 through the firewall...\n"
+    sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+    check_status "Allow TCP port 22"
 
     echo -e "\nEnabling the firewall...\n"
     sudo ufw --force enable
@@ -77,7 +85,7 @@ install_docker() {
 # Function to install Docker Compose
 install_docker_compose() {
     echo -e "\nDownloading Docker Compose...\n"
-    sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -Po '"tag_name": "\K.*\d')/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     check_status "Docker Compose download"
 
     echo -e "\nApplying executable permissions to the Docker Compose binary...\n"
@@ -131,18 +139,20 @@ read_data() {
 
 # Main script execution
 install_and_start_ssh &
+
 configure_firewall &
+
 install_docker &
+
 wait # Wait for background processes to finish
 
 install_docker_compose
-
 prepare_scripts
-
 build_and_run_containers
 
-insert_data
+echo -e "\nSetup and run complete!\n"
 
+insert_data
 read_data
 
-echo -e "\nSetup and run complete!\n"
+echo -e "\n"
