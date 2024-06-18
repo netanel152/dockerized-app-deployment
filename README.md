@@ -78,10 +78,57 @@ On your virtual machine, run the setup script to install Docker and Docker Compo
 
 ### Running Scripts Over SSH
 
+## General checks before the connecting over SSH ##
+- Check if you have a ping between the host machine to the virtual machine.
+  In the vm please allow ICMP (ping) and ssh traffic:
+   ```sh
+      sudo iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+      sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+   ```   
+
+- Check if you have a the ssh protocol open in the VM:
+   ```sh
+      sudo systemctl status ssh
+   ```
+
+-Install the SSH service if it's not installed:
+   ```sh
+      sudo apt-get update
+      sudo apt-get install openssh-server
+   ```   
+
+-Start the SSH service:
+   ```sh
+      sudo systemctl start ssh
+   ```
+
+-Enable the SSH service to start on boot:
+   ```sh
+      sudo systemctl enable ssh
+   ```
+
+-  Check Firewall Settings  
+   -Ensure that the firewall on your VM is not blocking SSH traffic.
+   ```sh
+      sudo ufw allow ssh
+      sudo ufw enable
+      sudo ufw status
+   ```
+   
+-Check SSH Configuration
+   -Ensure the following lines are correctly set (or not commented out):
+      *Port 22
+      *ListenAddress 0.0.0.0
+
+
 1.  **Connect to the VM via SSH**
-
+   -to get the info about the ip address:
+   ```sh
+      ifconfig
+   ```
+   then the enp0s3 there you will see the ip that you got over the network card of the host machine
+      
    Connect to your virtual machine using SSH:
-
    ```sh
       ssh user@vm-ip-address
    ```

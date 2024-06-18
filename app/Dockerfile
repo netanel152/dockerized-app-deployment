@@ -1,13 +1,10 @@
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get install -y \
-    mysql-client \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y mysql-client
 
-COPY insert-data.sh /usr/local/bin/
-COPY read-data.sh /usr/local/bin/
+COPY . /app
+WORKDIR /app
 
-RUN chmod +x /usr/local/bin/insert-data.sh
-RUN chmod +x /usr/local/bin/read-data.sh
+RUN chmod +x /app/insert_data.sh /app/read_data.sh
 
-CMD ["bash"]
+ENTRYPOINT ["tail", "-f", "/dev/null"]
