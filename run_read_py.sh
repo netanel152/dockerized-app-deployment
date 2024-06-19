@@ -1,2 +1,2 @@
 #!/bin/bash
-docker-compose exec app python3 /app/read_data.py
+docker-compose exec app /bin/bash -c "python3 /app/read_data.py"

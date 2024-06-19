@@ -2,6 +2,7 @@ import os
 import logging
 import mysql.connector
 from mysql.connector import Error
+import configparser
 
 # Configure logging
 logging.basicConfig(filename='/app/insert_data.log', level=logging.INFO,
@@ -26,12 +27,22 @@ def main():
     age = get_input("Enter age: ", is_positive_integer, "Age must be a number. Please enter a valid age.")
 
     # Read database credentials from env.cnf
-    config = {
-        'option_files': '/app/env.cnf'
+    config = configparser.ConfigParser()
+    config.read('/app/env.cnf')
+
+    db_config = {
+        'user': config['client']['user'],
+        'password': config['client']['password'],
+        'host': config['client']['host'],
+        'database': config['client']['database'],
+        'ssl_ca': config['client']['ssl-ca'],
+        'ssl_cert': config['client']['ssl-cert'],
+        'ssl_key': config['client']['ssl-key']
     }
 
+    connection = None
     try:
-        connection = mysql.connector.connect(**config)
+        connection = mysql.connector.connect(**db_config)
         
         if connection.is_connected():
             cursor = connection.cursor()
@@ -40,13 +51,16 @@ def main():
             connection.commit()
             logging.info(f"Inserted {name}, {age} into the database.")
             print("Data inserted successfully.")
+        else:
+            logging.error("Failed to connect to MySQL database.")
+            print("Failed to connect to MySQL database.")
     
     except Error as e:
         logging.error(f"Error: {e}")
-        print("Failed to insert data into MySQL table.")
+        print(f"Failed to insert data into MySQL table. Error: {e}")
     
     finally:
-        if connection.is_connected():
+        if connection and connection.is_connected():
             cursor.close()
             connection.close()
             logging.info("MySQL connection is closed.")
