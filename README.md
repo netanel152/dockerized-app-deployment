@@ -1,4 +1,4 @@
-# Dockerize Application Deployment for Integration Engineers
+# Dockerize Application Deployment
 
 ## Overview
 
@@ -14,12 +14,12 @@ This project demonstrates how to deploy a web application using Docker container
 ## Project Structure
 
 - **docker-compose.yml**: Defines and configures the Docker services for the project, including MySQL and the application container.
-- **mysql/init-db.sh**: Script to initialize the MySQL database and create the `users` table if it doesn't exist.
 - **app/Dockerfile**: Dockerfile to build the application container.
-- **app/insert-data.sh**: Script to insert data into the MySQL database.
-- **app/read-data.sh**: Script to read data from the MySQL database.
-- **vm-setup/setup.sh**: Script to set up Docker and Docker Compose on the virtual machine.
-- **vm-setup/network-setup.sh**: Script to configure network settings for Docker containers.
+- **app/insert_data.sh**: Script to insert data into the MySQL database.
+- **app/read_data.sh**: Script to read data from the MySQL database.
+- **mysql/Dockerfile**: Dockerfile to build the mysql container.
+- **mysql/init_db.sh**: Script to initialize the MySQL database and create the `users` table if it doesn't exist.
+- **vm_setup/setup.sh**: Script to set up Docker and Docker Compose on the virtual machine.
 
 ## Setup and Usage
 
@@ -47,7 +47,7 @@ This project demonstrates how to deploy a web application using Docker container
    Run the following command to insert data into the MySQL database:
 
    ```sh
-      docker exec -it app-container /usr/local/bin/insert-data.sh
+      docker exec -it app-container /usr/local/bin/insert_data.sh
    ```
 
 4. **Read Data from the Database**
@@ -55,7 +55,7 @@ This project demonstrates how to deploy a web application using Docker container
    Run the following command to read data from the MySQL database:
 
    ```sh
-      docker exec -it app-container /usr/local/bin/read-data.sh
+      docker exec -it app-container /usr/local/bin/read_data.sh
    ```
 
 ### Setting Up the VM
@@ -66,14 +66,6 @@ On your virtual machine, run the setup script to install Docker and Docker Compo
 
    ```sh
       sudo bash vm-setup/setup.sh
-   ```
-
-2.  **Configure the Network**
-
-    Run the network setup script to configure network settings for Docker containers:
-
-   ```sh
-      sudo bash vm-setup/network-setup.sh
    ```
 
 ### Running Scripts Over SSH
@@ -114,12 +106,6 @@ On your virtual machine, run the setup script to install Docker and Docker Compo
       sudo ufw enable
       sudo ufw status
    ```
-   
--Check SSH Configuration
-   -Ensure the following lines are correctly set (or not commented out):
-      *Port 22
-      *ListenAddress 0.0.0.0
-
 
 1.  **Connect to the VM via SSH**
    -to get the info about the ip address:

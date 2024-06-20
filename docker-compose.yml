@@ -24,6 +24,6 @@ services:
       MYSQL_DATABASE: user_data_db
     volumes:
       - ./app:/app
-      - ./mysql/ssl_certs:/app/ssl_certs
+      # - ./mysql/ssl_certs:/app/ssl_certs
     ports:
       - "8080:8080"
