@@ -24,5 +24,3 @@ sudo add-apt-repository \
     stable" || echo "Adding Docker APT repository failed"
 sudo apt-get update || echo "Package database update failed"
 sudo apt-get install -y docker-ce || echo "Docker CE is already installed"
-
-exit

@@ -28,5 +28,3 @@ done
 # Convert line endings
 dos2unix app/insert_data.sh || echo "Converting line endings for insert_data.sh failed"
 dos2unix app/read_data.sh || echo "Converting line endings for read_data.sh failed"
-
-exit
