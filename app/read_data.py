@@ -1,19 +1,38 @@
 import logging
 import mysql.connector
 from mysql.connector import Error
+import configparser
+import os
+
+# Ensure the logs directory exists
+log_directory = '/app/logs'
+log_file = os.path.join(log_directory, 'mysql_query.log')
+
+if not os.path.exists(log_directory):
+    os.makedirs(log_directory)
+
+# Ensure the log file exists
+if not os.path.exists(log_file):
+    with open(log_file, 'w') as file:
+        pass
 
 # Configure logging
-logging.basicConfig(filename='/app/read_data.log', level=logging.INFO,
+logging.basicConfig(filename='/app/logs/mysql_query.log', level=logging.INFO,
                     format='%(asctime)s:%(levelname)s:%(message)s')
 
 def main():
     # Read database credentials from env.cnf
-    config = {
-        'option_files': '/app/env.cnf'
-    }
+    config = configparser.ConfigParser()
+    config.read('/app/env.cnf')
 
+    db_config = {
+        'user': config['client']['user'],
+        'password': config['client']['password'],
+        'host': config['client']['host'],
+        'database': config['client']['database']
+    }
     try:
-        connection = mysql.connector.connect(**config)
+        connection = mysql.connector.connect(**db_config)
         
         if connection.is_connected():
             cursor = connection.cursor()

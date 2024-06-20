@@ -1,11 +1,23 @@
-import os
 import logging
 import mysql.connector
 from mysql.connector import Error
 import configparser
+import os
+
+# Ensure the logs directory exists
+log_directory = '/app/logs'
+log_file = os.path.join(log_directory, 'mysql_query.log')
+
+if not os.path.exists(log_directory):
+    os.makedirs(log_directory)
+
+# Ensure the log file exists
+if not os.path.exists(log_file):
+    with open(log_file, 'w') as file:
+        pass
 
 # Configure logging
-logging.basicConfig(filename='/app/insert_data.log', level=logging.INFO,
+logging.basicConfig(filename=log_file, level=logging.INFO,
                     format='%(asctime)s:%(levelname)s:%(message)s')
 
 def get_input(prompt, validation_fn, error_message):
@@ -28,25 +40,28 @@ def main():
 
     # Read database credentials from env.cnf
     config = configparser.ConfigParser()
-    config.read('/app/env.cnf')
+    try:
+        config.read('/app/env.cnf')
+        db_config = {
+            'user': config['client']['user'],
+            'password': config['client']['password'],
+            'host': config['client']['host'],
+            'database': config['client']['database']
+        }
 
-    db_config = {
-        'user': config['client']['user'],
-        'password': config['client']['password'],
-        'host': config['client']['host'],
-        'database': config['client']['database'],
-        'ssl_ca': config['client']['ssl-ca'],
-        'ssl_cert': config['client']['ssl-cert'],
-        'ssl_key': config['client']['ssl-key']
-    }
+    except Exception as e:
+        logging.error(f"Error reading config file: {e}")
+        print(f"Error reading config file: {e}")
+        return
 
     connection = None
     try:
         connection = mysql.connector.connect(**db_config)
-        
         if connection.is_connected():
+            logging.info("Connected to the MySQL database.")
+            print("Connected to the MySQL database.")  # Print to verify
             cursor = connection.cursor()
-            insert_query = "INSERT INTO users (Name, Age) VALUES (%s, %s)"
+            insert_query = "INSERT INTO users (ID, Name, Age) VALUES (UUID(), %s, %s)"
             cursor.execute(insert_query, (name, age))
             connection.commit()
             logging.info(f"Inserted {name}, {age} into the database.")
@@ -60,10 +75,11 @@ def main():
         print(f"Failed to insert data into MySQL table. Error: {e}")
     
     finally:
-        if connection and connection.is_connected():
+        if connection is not None and connection.is_connected():
             cursor.close()
             connection.close()
             logging.info("MySQL connection is closed.")
+            print("MySQL connection is closed.")  # Print to verify
 
 if __name__ == "__main__":
     main()
