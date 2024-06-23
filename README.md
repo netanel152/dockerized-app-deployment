@@ -44,9 +44,13 @@ This project demonstrates how to deploy a web application using Docker container
    - **Note:** The password for the root user is `150293`.
 
 ### Project Files Location
-- All necessary files are located at `/home/sf-dockerized-app-deployment`.
+- All necessary files are located at `/home/sf_dockerized-app-deployment`.
+
+- Navigate to the specified path to begin executing the scripts.
 
 ## Running Scripts
+
+- Execute the `./build_and_deploy_containers.sh` script located in `/home/sf_dockerized-app-deployment` to build and deploy the containers.
 
 Before running any scripts, ensure you are in the project's root directory.
 
