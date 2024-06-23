@@ -11,7 +11,6 @@ sudo apt-get install -y \
     ca-certificates \
     curl \
     software-properties-common \
-    dos2unix \
     openssh-server \
     python3 \
     python3-pip \

@@ -14,123 +14,24 @@ This project demonstrates how to deploy a web application using Docker container
 ## Project Structure
 
 - **docker-compose.yml**: Defines and configures the Docker services for the project, including MySQL and the application container.
+- **generate_ssl_certificates.sh**: This script automates the process of generating SSL certificates.
+- **README.md**: Provides a comprehensive overview of the project, including setup instructions, usage guidelines, and descriptions of each component and script within the project.
+- **run_insert_py.sh**: Execute a shell script run insert_data.py Python script.
+- **run_insert.sh**: Execute a shell script run insert_data.sh Shell script.
+- **run_read_py.sh**: Execute a shell script run read_data.py Python script.
+- **run_read.sh**: Execute a shell script run read_data.sh Shell script.
 - **app/Dockerfile**: Dockerfile to build the application container.
-- **app/insert_data.sh**: Script to insert data into the MySQL database.
+- **app/env.cnf**: Configuration file for mysql environment settings.
+- **app/insert_data.py**: Script to insert data into the database.
+- **app/read_data.py**: Script to read data from the database.
+- **app/insert_data.sh**: Insert data into the MySQL database.
 - **app/read_data.sh**: Script to read data from the MySQL database.
 - **mysql/Dockerfile**: Dockerfile to build the mysql container.
-- **mysql/init_db.sh**: Script to initialize the MySQL database and create the `users` table if it doesn't exist.
-- **vm_setup/setup.sh**: Script to set up Docker and Docker Compose on the virtual machine.
+- **mysql/init_db.sh**: Initialize the MySQL database and create the `users` table if it doesn't exist.
+- **vm_setup/configure_firewall_rules.sh**: Configures VM firewall for SSH and ICMP.
+- **vm_setup/install_docker_compose.sh**: Installs Docker Compose for container management.
+- **vm_setup/install_docker_engine.sh**: Installs Docker Engine for container creation and management.
+- **vm_setup/install_ssh_service.sh**: Sets up SSH for secure VM access.
+- **vm_setup/prepare_app_scripts.sh**: Prepares application scripts (permissions, line endings).
 
-## Setup and Usage
 
-### Using Docker Compose
-
-1. **Clone the Repository**
-
-   Clone the repository to your local machine using Git:
-
-   ```sh
-   git clone https://github.com/your-username/dockerized-app-deployment.git
-   cd dockerized-app-deployment
-   ```
-
-2. **Start the Docker Containers**
-
-   Start the MySQL and application containers using Docker Compose:
-
-   ```sh
-      docker-compose up -d
-   ```
-
-3. **Insert Data into the Database**
-
-   Run the following command to insert data into the MySQL database:
-
-   ```sh
-      docker exec -it app-container /usr/local/bin/insert_data.sh
-   ```
-
-4. **Read Data from the Database**
-
-   Run the following command to read data from the MySQL database:
-
-   ```sh
-      docker exec -it app-container /usr/local/bin/read_data.sh
-   ```
-
-### Setting Up the VM
-
-1.  **Run the Setup Script**
-
-On your virtual machine, run the setup script to install Docker and Docker Compose, and start the Docker services:
-
-   ```sh
-      sudo bash vm-setup/setup.sh
-   ```
-
-### Running Scripts Over SSH
-
-## General checks before the connecting over SSH ##
-- Check if you have a ping between the host machine to the virtual machine.
-  In the vm please allow ICMP (ping) and ssh traffic:
-   ```sh
-      sudo iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
-      sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-   ```   
-
-- Check if you have a the ssh protocol open in the VM:
-   ```sh
-      sudo systemctl status ssh
-   ```
-
--Install the SSH service if it's not installed:
-   ```sh
-      sudo apt-get update
-      sudo apt-get install openssh-server
-   ```   
-
--Start the SSH service:
-   ```sh
-      sudo systemctl start ssh
-   ```
-
--Enable the SSH service to start on boot:
-   ```sh
-      sudo systemctl enable ssh
-   ```
-
--  Check Firewall Settings  
-   -Ensure that the firewall on your VM is not blocking SSH traffic.
-   ```sh
-      sudo ufw allow ssh
-      sudo ufw enable
-      sudo ufw status
-   ```
-
-1.  **Connect to the VM via SSH**
-   -to get the info about the ip address:
-   ```sh
-      ifconfig
-   ```
-   then the enp0s3 there you will see the ip that you got over the network card of the host machine
-      
-   Connect to your virtual machine using SSH:
-   ```sh
-      ssh user@vm-ip-address
-   ```
-
-2. **Run the Insert Data Script**
-
-   On the virtual machine, run the insert data script:
-
-   ```sh
-      docker exec -it app-container /usr/local/bin/insert-data.sh
-   ```
-
-3. **Run the Read Data Script**
-
-   On the virtual machine, run the read data script:
-
-   ```sh
-      docker exec -it app-container /usr/local/bin/read-data.sh
-   ```

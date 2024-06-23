@@ -29,7 +29,9 @@ def main():
         'user': config['client']['user'],
         'password': config['client']['password'],
         'host': config['client']['host'],
-        'database': config['client']['database']
+        'database': config['client']['database'],
+        'use_pure': True,
+        'ssl_disabled': True,
     }
     try:
         connection = mysql.connector.connect(**db_config)
@@ -52,7 +54,6 @@ def main():
         if connection.is_connected():
             cursor.close()
             connection.close()
-            logging.info("MySQL connection is closed.")
 
 if __name__ == "__main__":
     main()

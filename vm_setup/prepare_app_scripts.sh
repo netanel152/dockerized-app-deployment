@@ -25,6 +25,6 @@ for script in "${scripts[@]}"; do
     fi
 done
 
-# Convert line endings
-dos2unix app/insert_data.sh || echo "Converting line endings for insert_data.sh failed"
-dos2unix app/read_data.sh || echo "Converting line endings for read_data.sh failed"
+# Remove Windows-style line endings (CRLF) to Unix-style (LF)
+sed -i 's/\r$//' app/read_data.sh || echo "Converting line endings for read_data.sh failed"
+sed -i 's/\r$//' app/insert_data.sh || echo "Converting line endings for insert_data.sh failed"

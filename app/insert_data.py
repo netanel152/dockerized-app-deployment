@@ -46,7 +46,9 @@ def main():
             'user': config['client']['user'],
             'password': config['client']['password'],
             'host': config['client']['host'],
-            'database': config['client']['database']
+            'database': config['client']['database'],
+            'use_pure': True,
+            'ssl_disabled': True,
         }
 
     except Exception as e:
@@ -59,13 +61,12 @@ def main():
         connection = mysql.connector.connect(**db_config)
         if connection.is_connected():
             logging.info("Connected to the MySQL database.")
-            print("Connected to the MySQL database.")  # Print to verify
             cursor = connection.cursor()
             insert_query = "INSERT INTO users (ID, Name, Age) VALUES (UUID(), %s, %s)"
             cursor.execute(insert_query, (name, age))
             connection.commit()
             logging.info(f"Inserted {name}, {age} into the database.")
-            print("Data inserted successfully.")
+            print("User inserted successfully.")
         else:
             logging.error("Failed to connect to MySQL database.")
             print("Failed to connect to MySQL database.")
@@ -78,8 +79,6 @@ def main():
         if connection is not None and connection.is_connected():
             cursor.close()
             connection.close()
-            logging.info("MySQL connection is closed.")
-            print("MySQL connection is closed.")  # Print to verify
 
 if __name__ == "__main__":
     main()

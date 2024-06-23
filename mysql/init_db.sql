@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS user_data_db;
 USE user_data_db;
 
 CREATE TABLE IF NOT EXISTS users (
-    ID CHAR(24) PRIMARY KEY,
+    ID CHAR(36) PRIMARY KEY,
     Name VARCHAR(255) UNIQUE,
     Age INT
 );
