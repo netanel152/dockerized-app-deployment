@@ -1,4 +1,3 @@
-# Use an official Ubuntu as a parent image
 FROM ubuntu:latest
 
 RUN apt-get update && apt-get install -y \
