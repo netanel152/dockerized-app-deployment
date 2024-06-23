@@ -14,6 +14,8 @@ sudo apt-get install -y \
     openssh-server \
     python3 \
     python3-pip \
+    python3-venv \
+    python3-dotenv \
     python3-mysql.connector || echo "Package installation failed"
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - || echo "Adding Docker GPG key failed"

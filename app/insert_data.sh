@@ -1,8 +1,13 @@
 #!/bin/bash
 
+if [ -f .env ]; then
+    set -a
+    . ./.env
+    set +a
+fi
+
 LOG_FILE=/app/logs/mysql_query.log
 
-# Ensure the log directory exists with correct permissions
 mkdir -p /app/logs
 chmod 755 /app/logs
 
@@ -11,7 +16,6 @@ if [[ ! -d /app/logs ]]; then
     exit 1
 fi
 
-# Ensure the log file exists
 touch "$LOG_FILE"
 chmod 644 "$LOG_FILE"
 
@@ -20,13 +24,11 @@ if [[ ! -f "$LOG_FILE" ]]; then
     exit 1
 fi
 
-# Function to log messages
 log_message() {
     local message="$1"
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>"$LOG_FILE"
 }
 
-# Function to prompt for input
 prompt_for_input() {
     local prompt_message="$1"
     local input_var
@@ -40,7 +42,6 @@ prompt_for_input() {
     echo "$input_var"
 }
 
-# Function to prompt for age
 prompt_for_age() {
     local input_var
 
@@ -53,37 +54,36 @@ prompt_for_age() {
     echo "$input_var"
 }
 
-# Function to check if name exists in MySQL
 name_exists() {
     local name="$1"
-    local database="${MYSQL_DATABASE:-user_data_db}"
+    local query="SELECT COUNT(*) FROM users WHERE Name='$name';"
+    local result
 
-    local result=$(mysql --defaults-extra-file=/app/env.cnf -se "SELECT COUNT(*) FROM users WHERE Name='$name';" "$database")
+    result=$(mysql -u"$MYSQL_USER" -p"$MYSQL_ROOT_PASSWORD" -h"$MYSQL_HOST" -D"$MYSQL_DATABASE" -se "$query")
     echo "$result"
 }
 
-# Function to generate a GUID
 generate_guid() {
     cat /proc/sys/kernel/random/uuid
 }
 
-# Function to insert data into MySQL
 insert_data() {
     local id="$1"
     local name="$2"
     local age="$3"
-    local database="${MYSQL_DATABASE:-user_data_db}"
 
-    mysql --defaults-extra-file=/app/env.cnf -e "INSERT INTO users (ID, Name, Age) VALUES ('$id', '$name', $age);" "$database" &>>"$LOG_FILE"
+    local query="INSERT INTO users (ID, Name, Age) VALUES ('$id', '$name', $age);"
 
+    mysql -u"$MYSQL_USER" -p"$MYSQL_ROOT_PASSWORD" -h"$MYSQL_HOST" -D"$MYSQL_DATABASE" -e "$query" &>>"$LOG_FILE"
     if [[ $? -eq 0 ]]; then
         log_message "Successfully inserted user: ID=$id, Name=$name, Age=$age"
+        echo "Successfully inserted user: ID=$id, Name=$name, Age=$age"
     else
         log_message "Failed to insert user: ID=$id, Name=$name, Age=$age"
+        echo "Failed to insert user: ID=$id, Name=$name, Age=$age"
     fi
 }
 
-# Main script execution
 main() {
     local id
     local name

@@ -1,22 +1,18 @@
 import logging
 import mysql.connector
 from mysql.connector import Error
-import configparser
 import os
 
-# Ensure the logs directory exists
 log_directory = '/app/logs'
 log_file = os.path.join(log_directory, 'mysql_query.log')
 
 if not os.path.exists(log_directory):
     os.makedirs(log_directory)
 
-# Ensure the log file exists
 if not os.path.exists(log_file):
     with open(log_file, 'w') as file:
         pass
 
-# Configure logging
 logging.basicConfig(filename=log_file, level=logging.INFO,
                     format='%(asctime)s:%(levelname)s:%(message)s')
 
@@ -34,42 +30,66 @@ def is_non_empty_string(s):
 def is_positive_integer(s):
     return s.isdigit()
 
-def main():
-    name = get_input("Enter name: ", is_non_empty_string, "Name cannot be empty. Please enter a valid name.")
-    age = get_input("Enter age: ", is_positive_integer, "Age must be a number. Please enter a valid age.")
-
-    # Read database credentials from env.cnf
-    config = configparser.ConfigParser()
+def load_db_config():
     try:
-        config.read('/app/env.cnf')
         db_config = {
-            'user': config['client']['user'],
-            'password': config['client']['password'],
-            'host': config['client']['host'],
-            'database': config['client']['database'],
+            'user': os.getenv('MYSQL_USER'),
+            'password': os.getenv('MYSQL_ROOT_PASSWORD'),
+            'host': os.getenv('MYSQL_HOST'),
+            'database': os.getenv('MYSQL_DATABASE'),
             'use_pure': True,
             'ssl_disabled': True,
         }
-
+        return db_config
     except Exception as e:
         logging.error(f"Error reading config file: {e}")
-        print(f"Error reading config file: {e}")
-        return
+        raise
 
-    connection = None
+def connect_to_db(db_config):
     try:
         connection = mysql.connector.connect(**db_config)
         if connection.is_connected():
             logging.info("Connected to the MySQL database.")
-            cursor = connection.cursor()
-            insert_query = "INSERT INTO users (ID, Name, Age) VALUES (UUID(), %s, %s)"
-            cursor.execute(insert_query, (name, age))
-            connection.commit()
-            logging.info(f"Inserted {name}, {age} into the database.")
-            print("User inserted successfully.")
+            return connection
         else:
             logging.error("Failed to connect to MySQL database.")
-            print("Failed to connect to MySQL database.")
+            raise Error("Failed to connect to MySQL database.")
+    except Error as e:
+        logging.error(f"Database connection error: {e}")
+        raise
+
+def user_exists(cursor, name):
+    check_query = "SELECT COUNT(*) FROM users WHERE Name = %s"
+    cursor.execute(check_query, (name,))
+    result = cursor.fetchone()
+    return result[0] > 0
+
+def insert_user(cursor, name, age):
+    insert_query = "INSERT INTO users (ID, Name, Age) VALUES (UUID(), %s, %s)"
+    cursor.execute(insert_query, (name, age))
+
+def main():
+    db_config = load_db_config()
+
+    connection = None
+    try:
+        connection = connect_to_db(db_config)
+        cursor = connection.cursor()
+
+        while True:
+            name = get_input("Enter name: ", is_non_empty_string, "Name cannot be empty. Please enter a valid name.")
+            if user_exists(cursor, name):
+                logging.warning(f"Name {name} already exists in the database.")
+                print("Name already exists. Please enter a different name.")
+            else:
+                break
+
+        age = get_input("Enter age: ", is_positive_integer, "Age must be a number. Please enter a valid age.")
+
+        insert_user(cursor, name, age)
+        connection.commit()
+        logging.info(f"Inserted {name}, {age} into the database.")
+        print("User inserted successfully.")
     
     except Error as e:
         logging.error(f"Error: {e}")

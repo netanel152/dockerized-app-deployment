@@ -9,7 +9,7 @@ This project demonstrates how to deploy a web application using Docker container
 - Docker
 - Docker Compose
 - VirtualBox (for OVA image)
-- Git (optional, for cloning the repository)
+- Git (for cloning the repository)
 
 ## Project Structure
 
@@ -20,8 +20,8 @@ This project demonstrates how to deploy a web application using Docker container
 - **run_insert.sh**: Execute a shell script run insert_data.sh Shell script.
 - **run_read_py.sh**: Execute a shell script run read_data.py Python script.
 - **run_read.sh**: Execute a shell script run read_data.sh Shell script.
+- **config.env**: Configuration file for mysql environment settings.
 - **app/Dockerfile**: Dockerfile to build the application container.
-- **app/env.cnf**: Configuration file for mysql environment settings.
 - **app/insert_data.py**: Script to insert data into the database.
 - **app/read_data.py**: Script to read data from the database.
 - **app/insert_data.sh**: Insert data into the MySQL database.

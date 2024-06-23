@@ -7,7 +7,8 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     mysql-client \
     python3-mysql.connector \
-    python3-venv
+    python3-venv \
+    python3-dotenv
 
 # Copy the current directory contents into the container at /app
 COPY . /app
