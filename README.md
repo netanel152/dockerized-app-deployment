@@ -8,8 +8,8 @@ This project demonstrates how to deploy a web application using Docker container
 
 - Docker
 - Docker Compose
-- VirtualBox (for OVA image)
-- Git (for cloning the repository)
+- VirtualBox
+- Git
 
 ## Project Structure
 - **build_and_deploy_containers.sh**: build Docker images and deploying them as containers. It uses `docker-compose up --build -d` to build the images from the Dockerfile's specified in the `docker-compose.yml` file and then starts the containers in detached mode.
