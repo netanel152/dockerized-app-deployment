@@ -55,8 +55,9 @@ main() {
     local mysql_output
     local mysql_status
 
-    mysql_output=$(mysql -u"$MYSQL_USER" -p"$MYSQL_ROOT_PASSWORD" -h"$MYSQL_HOST" -D"$MYSQL_DATABASE" -se "SELECT * FROM users;" 2>&1)
-    mysql_status=$?
+    export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"
+    mysql_output=$(mysql -u"$MYSQL_USER" -h"$MYSQL_HOST" -D"$MYSQL_DATABASE" -se "SELECT * FROM users;" 2>&1) mysql_status=$?
+    unset MYSQL_PWD # Clear the password from the environment immediately after use
 
     check_status $mysql_status "$mysql_output"
 }

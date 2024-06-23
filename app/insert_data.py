@@ -89,7 +89,7 @@ def main():
         insert_user(cursor, name, age)
         connection.commit()
         logging.info(f"Inserted {name}, {age} into the database.")
-        print("User inserted successfully.")
+        print(f"Successfully inserted user: name: {name}, age: {age}")
     
     except Error as e:
         logging.error(f"Error: {e}")
