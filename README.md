@@ -34,6 +34,10 @@ This project demonstrates how to deploy a web application using Docker container
 - **vm_setup/install_ssh_service.sh**: Sets up SSH for secure VM access.
 - **vm_setup/prepare_app_scripts.sh**: Prepares application scripts (permissions, line endings).
 
+## Additional Information
+
+- **Cloning the Project:** If you're cloning the project from a Git repository, add the `config.env` file to your project locally for proper configuration. it will be in a speared file that I will provided you in the mail.
+
 # Project Setup and Execution Guide
 
 ## Getting Started
@@ -71,7 +75,4 @@ To read data from the users table, you can:
 These scripts call the files under the `app` folder:
 - `read_data.py`
 - `read_data.sh`
-
-## Additional Information
-
-- **Cloning the Project:** If you're cloning the project from a Git repository, remember to add the `config.env` file to your project locally for proper configuration. it will be in speared file that i will provided you in the mail.
+  
